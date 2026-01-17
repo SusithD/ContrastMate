@@ -1,0 +1,422 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================================
+   Base Styles
+   ============================================================================ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 12px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: #1e1e1e;
+  color: #ffffff;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ============================================================================
+   Scrollbar Styles
+   ============================================================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #2c2c2c;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #555555;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #666666;
+}
+
+/* ============================================================================
+   Custom Components
+   ============================================================================ */
+
+.glass-card {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-badge--pass {
+  background: rgba(20, 174, 92, 0.15);
+  color: #14ae5c;
+  border: 1px solid rgba(20, 174, 92, 0.3);
+}
+
+.status-badge--fail {
+  background: rgba(242, 72, 34, 0.15);
+  color: #f24822;
+  border: 1px solid rgba(242, 72, 34, 0.3);
+}
+
+.status-badge--warning {
+  background: rgba(255, 205, 41, 0.15);
+  color: #ffcd29;
+  border: 1px solid rgba(255, 205, 41, 0.3);
+}
+
+.status-badge--aa {
+  background: rgba(13, 153, 255, 0.15);
+  color: #0d99ff;
+  border: 1px solid rgba(13, 153, 255, 0.3);
+}
+
+.status-badge--aaa {
+  background: rgba(123, 97, 255, 0.15);
+  color: #7b61ff;
+  border: 1px solid rgba(123, 97, 255, 0.3);
+}
+
+/* ============================================================================
+   Layer Card Styles
+   ============================================================================ */
+
+.layer-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: #2c2c2c;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.layer-card:hover {
+  background: #383838;
+  border-color: #4a4a4a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.layer-card:active {
+  transform: translateY(0);
+}
+
+.layer-card--error {
+  border-left: 3px solid #f24822;
+}
+
+.layer-card--warning {
+  border-left: 3px solid #ffcd29;
+}
+
+.layer-card--pass {
+  border-left: 3px solid #14ae5c;
+}
+
+/* ============================================================================
+   Color Swatch Styles
+   ============================================================================ */
+
+.color-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
+}
+
+.color-preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contrast-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ============================================================================
+   Stats Card Styles
+   ============================================================================ */
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background: #2c2c2c;
+  border-radius: 10px;
+  min-width: 80px;
+}
+
+.stat-card__value {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stat-card__label {
+  font-size: 10px;
+  color: #8c8c8c;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+.stat-card--error .stat-card__value {
+  color: #f24822;
+}
+
+.stat-card--warning .stat-card__value {
+  color: #ffcd29;
+}
+
+.stat-card--pass .stat-card__value {
+  color: #14ae5c;
+}
+
+/* ============================================================================
+   Filter Button Styles
+   ============================================================================ */
+
+.filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid #444444;
+  border-radius: 6px;
+  color: #b3b3b3;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-btn:hover {
+  background: #383838;
+  border-color: #555555;
+  color: #ffffff;
+}
+
+.filter-btn--active {
+  background: rgba(13, 153, 255, 0.15);
+  border-color: rgba(13, 153, 255, 0.4);
+  color: #0d99ff;
+}
+
+/* ============================================================================
+   Button Styles
+   ============================================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: none;
+}
+
+.btn--primary {
+  background: linear-gradient(135deg, #0d99ff 0%, #0a7dd4 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(13, 153, 255, 0.3);
+}
+
+.btn--primary:hover {
+  background: linear-gradient(135deg, #1ca3ff 0%, #0d8ee8 100%);
+  box-shadow: 0 4px 12px rgba(13, 153, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn--primary:active {
+  transform: translateY(0);
+}
+
+.btn--secondary {
+  background: #383838;
+  color: #ffffff;
+  border: 1px solid #444444;
+}
+
+.btn--secondary:hover {
+  background: #444444;
+  border-color: #555555;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: #b3b3b3;
+}
+
+.btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* ============================================================================
+   Empty State Styles
+   ============================================================================ */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.empty-state__icon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.empty-state__description {
+  font-size: 12px;
+  color: #8c8c8c;
+  max-width: 240px;
+  line-height: 1.6;
+}
+
+/* ============================================================================
+   Loading State Styles
+   ============================================================================ */
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #3a3a3a;
+  border-top-color: #0d99ff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================================================
+   Animation Utilities
+   ============================================================================ */
+
+.animate-in {
+  animation: fadeSlideIn 0.2s ease-out;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+
+/* ============================================================================
+   Tooltip Styles
+   ============================================================================ */
+
+.tooltip {
+  position: relative;
+}
+
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-4px);
+  padding: 6px 10px;
+  background: #1a1a1a;
+  color: #ffffff;
+  font-size: 10px;
+  white-space: nowrap;
+  border-radius: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.15s ease;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.tooltip:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-8px);
+}
