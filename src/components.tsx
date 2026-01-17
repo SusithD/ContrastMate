@@ -2,7 +2,7 @@
  * Reusable UI Components for Accessibility Auditor
  */
 
-import { h, JSX } from 'preact'
+import { h, Fragment, JSX } from 'preact'
 import type { TextLayerData, FilterMode, ScanResult, WCAGLevel } from './types'
 import { formatContrastRatio, rgbToHex } from './contrast'
 import {

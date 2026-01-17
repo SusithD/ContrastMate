@@ -3,7 +3,7 @@
  * React/Preact UI with Tailwind CSS for Figma plugin
  */
 
-import { h } from 'preact'
+import { h, Fragment } from 'preact'
 import { useState, useEffect, useCallback, useMemo } from 'preact/hooks'
 import { render } from '@create-figma-plugin/ui'
 import { emit, on } from '@create-figma-plugin/utilities'
