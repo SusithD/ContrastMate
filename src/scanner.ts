@@ -481,17 +481,59 @@ export async function scanSelection(options: ScanOptions): Promise<ScanResult> {
 
 /**
  * Focus on a specific node in the Figma canvas
+ * Returns success status and optional error message
  */
-export function focusOnNode(nodeId: string): boolean {
+export async function focusOnNode(nodeId: string): Promise<{ success: boolean; error?: string }> {
     try {
-        const node = figma.getNodeById(nodeId)
-        if (node && 'absoluteBoundingBox' in node) {
-            figma.viewport.scrollAndZoomIntoView([node as SceneNode])
-            figma.currentPage.selection = [node as SceneNode]
-            return true
+        // Use async version to support cross-page access
+        const node = await figma.getNodeByIdAsync(nodeId)
+
+        if (!node) {
+            console.warn(`Node with ID ${nodeId} not found. It may have been deleted.`)
+            return {
+                success: false,
+                error: 'Layer was not found. It may have been deleted or moved.'
+            }
         }
-        return false
-    } catch {
-        return false
+
+        // Check if node is a SceneNode (can be selected and has bounds)
+        if (!('absoluteBoundingBox' in node)) {
+            console.warn(`Node ${node.name} (${nodeId}) cannot be focused (not a scene node)`)
+            return {
+                success: false,
+                error: `Cannot focus on "${node.name}". This type of layer cannot be selected.`
+            }
+        }
+
+        // Check if node has valid bounds
+        if (!node.absoluteBoundingBox) {
+            console.warn(`Node ${node.name} (${nodeId}) has no position information`)
+            return {
+                success: false,
+                error: `Cannot focus on "${node.name}". Layer has no position information.`
+            }
+        }
+
+        // Find the page containing this node
+        let parent: BaseNode | null = node.parent
+        while (parent && parent.type !== 'PAGE') {
+            parent = parent.parent
+        }
+
+        // Switch to the correct page if needed
+        if (parent && parent.type === 'PAGE' && figma.currentPage.id !== parent.id) {
+            figma.currentPage = parent as PageNode
+        }
+
+        // Focus and select the node
+        figma.viewport.scrollAndZoomIntoView([node as SceneNode])
+        figma.currentPage.selection = [node as SceneNode]
+        return { success: true }
+    } catch (error) {
+        console.error(`Error focusing on node ${nodeId}:`, error)
+        return {
+            success: false,
+            error: `An unexpected error occurred: ${error instanceof Error ? error.message : 'Unknown error'}`
+        }
     }
 }

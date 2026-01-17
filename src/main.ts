@@ -73,10 +73,10 @@ function setupMessageHandlers(): void {
     })
 
     // Handle focus node request from UI
-    on('FOCUS_NODE', (payload: { nodeId: string }) => {
-        const success = focusOnNode(payload.nodeId)
-        if (!success) {
-            emitError('Could not find or focus on the selected layer.')
+    on('FOCUS_NODE', async (payload: { nodeId: string }) => {
+        const result = await focusOnNode(payload.nodeId)
+        if (!result.success) {
+            emitError(result.error || 'Could not find or focus on the selected layer.')
         }
     })
 }
