@@ -7,7 +7,7 @@ import { h, Fragment } from 'preact'
 import { useState, useEffect, useCallback, useMemo } from 'preact/hooks'
 import { render } from '@create-figma-plugin/ui'
 import { emit, on } from '@create-figma-plugin/utilities'
-import './styles.css'
+import '!./styles.processed.css'
 
 import type {
     TextLayerData,

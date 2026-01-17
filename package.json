@@ -6,7 +6,8 @@
     "author": "Your Name",
     "license": "MIT",
     "scripts": {
-        "build": "build-figma-plugin --typecheck --minify",
+        "build:css": "postcss src/styles.css -o src/styles.processed.css",
+        "build": "npm run build:css && build-figma-plugin --typecheck --minify",
         "watch": "build-figma-plugin --typecheck --watch",
         "preinstall": "npx only-allow npm"
     },
@@ -48,6 +49,7 @@
         "@types/node": "^20.10.6",
         "autoprefixer": "^10.4.16",
         "postcss": "^8.4.33",
+        "postcss-cli": "^11.0.1",
         "tailwindcss": "^3.4.1",
         "typescript": "^5.3.3"
     }

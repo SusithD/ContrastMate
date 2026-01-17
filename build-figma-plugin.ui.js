@@ -1,7 +1,4 @@
-import tailwindcss from 'tailwindcss'
-import autoprefixer from 'autoprefixer'
-
-// Custom esbuild configuration for the UI entry point
+// PostCSS configuration for Tailwind CSS processing
 export default function (buildOptions) {
     return {
         ...buildOptions,
@@ -10,9 +7,4 @@ export default function (buildOptions) {
             'process.env.NODE_ENV': JSON.stringify('production')
         }
     }
-}
-
-// PostCSS plugins for Tailwind CSS
-export function postcssPlugins() {
-    return [tailwindcss, autoprefixer]
 }
