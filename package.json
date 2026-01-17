@@ -9,6 +9,10 @@
         "build:css": "postcss src/styles.css -o src/styles.processed.css",
         "build": "npm run build:css && build-figma-plugin --typecheck --minify",
         "watch": "build-figma-plugin --typecheck --watch",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:ui": "vitest --ui",
+        "test:coverage": "vitest run --coverage",
         "preinstall": "npx only-allow npm"
     },
     "figma-plugin": {
@@ -37,20 +41,23 @@
         "documentAccess": "dynamic-page"
     },
     "dependencies": {
-        "@create-figma-plugin/ui": "^3.2.0",
-        "@create-figma-plugin/utilities": "^3.2.0",
         "culori": "^4.0.1",
         "preact": "^10.19.3"
     },
     "devDependencies": {
-        "@create-figma-plugin/build": "^3.2.0",
-        "@create-figma-plugin/tsconfig": "^3.2.0",
+        "@create-figma-plugin/build": "^4.0.3",
+        "@create-figma-plugin/tsconfig": "^4.0.3",
+        "@create-figma-plugin/ui": "^4.0.3",
+        "@create-figma-plugin/utilities": "^4.0.3",
         "@figma/plugin-typings": "^1.94.0",
         "@types/node": "^20.10.6",
+        "@vitest/ui": "^4.0.17",
         "autoprefixer": "^10.4.16",
+        "happy-dom": "^20.3.1",
         "postcss": "^8.4.33",
         "postcss-cli": "^11.0.1",
         "tailwindcss": "^3.4.1",
-        "typescript": "^5.3.3"
+        "typescript": "^5.3.3",
+        "vitest": "^4.0.17"
     }
 }

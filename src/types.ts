@@ -90,12 +90,21 @@ export interface ScanResult {
     passCount: number
     scanDuration: number // milliseconds
     timestamp: number
+    timedOut?: boolean // True if scan was terminated due to timeout
 }
 
 export interface ScanOptions {
     minContrastRatio: number
     checkLargeText: boolean
     includeHiddenLayers: boolean
+    timeout?: number // Maximum scan duration in milliseconds (default: 30000)
+    onProgress?: (scanned: number, estimated?: number) => void // Progress callback
+}
+
+export interface ScanProgress {
+    scanned: number
+    estimated?: number
+    percentComplete?: number
 }
 
 // ============================================================================
@@ -105,6 +114,8 @@ export interface ScanOptions {
 export type MessageType =
     | 'SCAN_REQUEST'
     | 'SCAN_RESULT'
+    | 'SCAN_PROGRESS'
+    | 'SCAN_STARTED'
     | 'FOCUS_NODE'
     | 'SELECTION_CHANGED'
     | 'PLUGIN_READY'
@@ -124,6 +135,11 @@ export interface ScanRequestMessage extends PluginMessage {
 export interface ScanResultMessage extends PluginMessage {
     type: 'SCAN_RESULT'
     payload: ScanResult
+}
+
+export interface ScanProgressMessage extends PluginMessage {
+    type: 'SCAN_PROGRESS'
+    payload: ScanProgress
 }
 
 export interface FocusNodeMessage extends PluginMessage {

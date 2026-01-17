@@ -11,6 +11,7 @@ import type {
     ScanResult,
     SelectionChangedMessage,
     ScanResultMessage,
+    ScanProgressMessage,
     ErrorMessage
 } from './types'
 
@@ -64,19 +65,43 @@ export default function () {
 function setupMessageHandlers(): void {
     // Handle scan request from UI
     on('SCAN_REQUEST', async (options: ScanOptions) => {
-        await performScan(options)
+        try {
+            await performScan(options)
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Failed to perform scan'
+            emitError(errorMessage)
+            console.error('[Accessibility Auditor] SCAN_REQUEST error:', error)
+        }
     })
 
     // Handle rescan request
     on('RESCAN_REQUEST', async () => {
-        await performScan(DEFAULT_SCAN_OPTIONS)
+        try {
+            await performScan(DEFAULT_SCAN_OPTIONS)
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Failed to rescan'
+            emitError(errorMessage)
+            console.error('[Accessibility Auditor] RESCAN_REQUEST error:', error)
+        }
     })
 
     // Handle focus node request from UI
     on('FOCUS_NODE', async (payload: { nodeId: string }) => {
-        const result = await focusOnNode(payload.nodeId)
-        if (!result.success) {
-            emitError(result.error || 'Could not find or focus on the selected layer.')
+        try {
+            // Validate input
+            if (!payload?.nodeId || typeof payload.nodeId !== 'string') {
+                emitError('Invalid node ID provided')
+                return
+            }
+
+            const result = await focusOnNode(payload.nodeId)
+            if (!result.success) {
+                emitError(result.error || 'Could not find or focus on the selected layer.')
+            }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Failed to focus on node'
+            emitError(errorMessage)
+            console.error('[Accessibility Auditor] FOCUS_NODE error:', error)
         }
     })
 }
@@ -110,8 +135,16 @@ async function performScan(options: ScanOptions): Promise<void> {
         // Notify UI that scanning has started
         emit('SCAN_STARTED', null)
 
-        // Perform the scan
-        const result = await scanSelection(options)
+        // Add progress callback to options
+        const optionsWithProgress: ScanOptions = {
+            ...options,
+            onProgress: (scanned: number) => {
+                emit('SCAN_PROGRESS', { scanned })
+            }
+        }
+
+        // Perform the scan with progress reporting
+        const result = await scanSelection(optionsWithProgress)
 
         // Send results to UI
         const message: ScanResultMessage = {
@@ -122,10 +155,15 @@ async function performScan(options: ScanOptions): Promise<void> {
         emit('SCAN_RESULT', message.payload)
 
         // Log stats to console
-        console.log(`[Accessibility Auditor] Scanned ${result.totalScanned} text layers in ${result.scanDuration}ms`)
+        const timeoutWarning = result.timedOut ? ' (TIMEOUT)' : ''
+        console.log(`[Accessibility Auditor] Scanned ${result.totalScanned} text layers in ${result.scanDuration}ms${timeoutWarning}`)
         console.log(`  - Errors: ${result.errorCount}`)
         console.log(`  - Warnings: ${result.warningCount}`)
         console.log(`  - Passed: ${result.passCount}`)
+
+        if (result.timedOut) {
+            console.warn('[Accessibility Auditor] Scan was terminated due to timeout. Results may be incomplete.')
+        }
 
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'

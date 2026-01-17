@@ -441,25 +441,56 @@ async function processTextNode(
 }
 
 /**
- * Main scan function - scans the current selection
+ * Main scan function - scans the current selection with timeout protection
  */
 export async function scanSelection(options: ScanOptions): Promise<ScanResult> {
     const startTime = Date.now()
+    const timeout = options.timeout ?? 30000 // Default 30 second timeout
     const textLayers: TextLayerData[] = []
+    let timedOut = false
+    let lastProgressReport = 0
+    const progressInterval = 100 // Report progress every 100ms
+
+    // Helper to check if we've exceeded timeout
+    const checkTimeout = (): boolean => {
+        const elapsed = Date.now() - startTime
+        if (elapsed > timeout) {
+            console.warn(`[Accessibility Auditor] Scan timeout after ${elapsed}ms (limit: ${timeout}ms)`)
+            timedOut = true
+            return true
+        }
+        return false
+    }
+
+    // Helper to report progress
+    const reportProgress = (force = false): void => {
+        const now = Date.now()
+        if (force || now - lastProgressReport > progressInterval) {
+            options.onProgress?.(textLayers.length)
+            lastProgressReport = now
+        }
+    }
 
     const selection = figma.currentPage.selection
 
     if (selection.length === 0) {
         // No selection - scan entire page
         for (const child of figma.currentPage.children) {
+            if (checkTimeout()) break
             await scanNodeRecursive(child, textLayers, options)
+            reportProgress()
         }
     } else {
         // Scan selected nodes
         for (const node of selection) {
+            if (checkTimeout()) break
             await scanNodeRecursive(node, textLayers, options)
+            reportProgress()
         }
     }
+
+    // Final progress report
+    reportProgress(true)
 
     // Calculate statistics
     const errorCount = textLayers.filter(t => t.issueType === 'contrast-fail').length
@@ -475,7 +506,8 @@ export async function scanSelection(options: ScanOptions): Promise<ScanResult> {
         warningCount,
         passCount,
         scanDuration: Date.now() - startTime,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        timedOut
     }
 }
 
