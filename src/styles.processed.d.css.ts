@@ -88,6 +88,7 @@ declare const styles: {
   readonly "rounded-md": string;
   readonly "rounded-xl": string;
   readonly "spin": string;
+  readonly "sr-only": string;
   readonly "stagger-1": string;
   readonly "stagger-2": string;
   readonly "stagger-3": string;

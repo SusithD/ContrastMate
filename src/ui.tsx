@@ -44,6 +44,7 @@ const DEFAULT_SCAN_OPTIONS: ScanOptions = {
 function App(): h.JSX.Element {
     // State
     const [isScanning, setIsScanning] = useState(false)
+    const [scannedCount, setScannedCount] = useState(0)
     const [scanResult, setScanResult] = useState<ScanResult | null>(null)
     const [filterMode, setFilterMode] = useState<FilterMode>('all')
     const [searchQuery, setSearchQuery] = useState('')
@@ -65,13 +66,20 @@ function App(): h.JSX.Element {
         // Scan started
         on('SCAN_STARTED', () => {
             setIsScanning(true)
+            setScannedCount(0)
             setError(null)
+        })
+
+        // Scan progress
+        on('SCAN_PROGRESS', (payload: { scanned: number }) => {
+            setScannedCount(payload.scanned)
         })
 
         // Scan result
         on('SCAN_RESULT', (result: ScanResult) => {
             setScanResult(result)
             setIsScanning(false)
+            setScannedCount(0)
             setError(null)
         })
 
@@ -206,7 +214,7 @@ function App(): h.JSX.Element {
                 )}
 
                 {/* Loading State */}
-                {isScanning && <LoadingState />}
+                {isScanning && <LoadingState scannedCount={scannedCount} />}
 
                 {/* No Scan Result Yet */}
                 {!isScanning && !scanResult && (

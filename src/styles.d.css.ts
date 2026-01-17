@@ -21,6 +21,7 @@ declare const styles: {
   readonly "layer-card--warning": string;
   readonly "loading-spinner": string;
   readonly "spin": string;
+  readonly "sr-only": string;
   readonly "stagger-1": string;
   readonly "stagger-2": string;
   readonly "stagger-3": string;

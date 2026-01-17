@@ -70,12 +70,46 @@ export function FilterBar({
         { mode: 'passed', label: 'Passed', count: passCount }
     ]
 
+    const handleKeyDown = (event: KeyboardEvent, currentIndex: number) => {
+        const modes = filters.map(f => f.mode)
+        let newIndex = currentIndex
+
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+            event.preventDefault()
+            newIndex = (currentIndex + 1) % modes.length
+        } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+            event.preventDefault()
+            newIndex = (currentIndex - 1 + modes.length) % modes.length
+        } else if (event.key === 'Home') {
+            event.preventDefault()
+            newIndex = 0
+        } else if (event.key === 'End') {
+            event.preventDefault()
+            newIndex = modes.length - 1
+        } else {
+            return
+        }
+
+        onFilterChange(modes[newIndex])
+        // Focus the new button
+        const buttons = document.querySelectorAll('[role="tab"]')
+        if (buttons[newIndex]) {
+            (buttons[newIndex] as HTMLElement).focus()
+        }
+    }
+
     return (
-        <div className="flex gap-2 px-4 py-3 overflow-x-auto">
-            {filters.map(({ mode, label, count }) => (
+        <div className="flex gap-2 px-4 py-3 overflow-x-auto" role="tablist" aria-label="Filter layers">
+            {filters.map(({ mode, label, count }, index) => (
                 <button
                     key={mode}
+                    role="tab"
+                    aria-selected={filterMode === mode}
+                    aria-controls="layer-list"
+                    aria-label={`${label} layers: ${count} items`}
+                    tabIndex={filterMode === mode ? 0 : -1}
                     onClick={() => onFilterChange(mode)}
+                    onKeyDown={(e) => handleKeyDown(e, index)}
                     className={`filter-btn whitespace-nowrap ${filterMode === mode ? 'filter-btn--active' : ''
                         }`}
                 >
@@ -104,11 +138,16 @@ export function SearchBar({
 }: SearchBarProps): JSX.Element {
     return (
         <div className="relative px-4">
+            <label htmlFor="layer-search" className="sr-only">
+                Search layers by name, text, or font
+            </label>
             <input
+                id="layer-search"
                 type="text"
                 value={value}
                 onInput={(e) => onChange((e.target as HTMLInputElement).value)}
                 placeholder={placeholder}
+                aria-label="Search layers by name, text, or font"
                 className="w-full px-4 py-2 pl-10 bg-figma-bg-tertiary border border-figma-border-subtle rounded-lg text-sm text-figma-text-primary placeholder-figma-text-tertiary focus:outline-none focus:border-figma-brand-primary transition-colors"
             />
             <svg
@@ -232,11 +271,35 @@ export function LayerCard({ layer, onClick, isSelected }: LayerCardProps): JSX.E
         }
     }
 
+    const getStatusLabel = () => {
+        switch (layer.issueType) {
+            case 'contrast-fail':
+                return 'Contrast error'
+            case 'missing-font':
+                return 'Missing font'
+            case 'no-background':
+                return 'No background detected'
+            case 'none':
+                return 'Passes accessibility'
+        }
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault()
+            onClick()
+        }
+    }
+
     return (
-        <div
+        <button
+            type="button"
             className={`layer-card ${getCardClass()} ${isSelected ? 'ring-2 ring-figma-brand-primary' : ''
                 } animate-in`}
             onClick={onClick}
+            onKeyDown={handleKeyDown}
+            aria-label={`${getStatusLabel()}: ${layer.name} in ${layer.parentName}. Contrast ratio ${layer.contrastRatio.toFixed(2)}:1, WCAG ${layer.wcagLevel}`}
+            aria-pressed={isSelected}
         >
             {/* Header Row */}
             <div className="flex items-start justify-between gap-2">
@@ -312,7 +375,7 @@ export function LayerCard({ layer, onClick, isSelected }: LayerCardProps): JSX.E
                     </span>
                 </div>
             )}
-        </div>
+        </button>
     )
 }
 
@@ -329,7 +392,7 @@ interface LayerListProps {
 export function LayerList({ layers, selectedId, onLayerClick }: LayerListProps): JSX.Element {
     if (layers.length === 0) {
         return (
-            <div className="empty-state">
+            <div id="layer-list" className="empty-state" role="region" aria-label="Layer results">
                 <IconType size={48} className="empty-state__icon" />
                 <h3 className="empty-state__title">No layers match your filter</h3>
                 <p className="empty-state__description">
@@ -340,7 +403,13 @@ export function LayerList({ layers, selectedId, onLayerClick }: LayerListProps):
     }
 
     return (
-        <div className="flex flex-col gap-3 px-4 pb-4">
+        <div
+            id="layer-list"
+            className="flex flex-col gap-3 px-4 pb-4"
+            role="region"
+            aria-label="Layer results"
+            aria-live="polite"
+        >
             {layers.map((layer, index) => (
                 <LayerCard
                     key={layer.id}
@@ -357,11 +426,19 @@ export function LayerList({ layers, selectedId, onLayerClick }: LayerListProps):
 // Loading State Component
 // ============================================================================
 
-export function LoadingState(): JSX.Element {
+interface LoadingStateProps {
+    scannedCount?: number
+}
+
+export function LoadingState({ scannedCount }: LoadingStateProps): JSX.Element {
     return (
         <div className="flex flex-col items-center justify-center py-16">
             <div className="loading-spinner mb-4" />
-            <p className="text-sm text-figma-text-secondary">Scanning layers...</p>
+            <p className="text-sm text-figma-text-secondary">
+                {scannedCount !== undefined && scannedCount > 0
+                    ? `Scanning layers... (${scannedCount} scanned)`
+                    : 'Scanning layers...'}
+            </p>
         </div>
     )
 }
@@ -471,6 +548,7 @@ export function Header({ onRescan, isScanning, lastScanTime }: HeaderProps): JSX
                 disabled={isScanning}
                 className={`btn btn--secondary ${isScanning ? 'animate-pulse' : ''}`}
                 title="Re-scan selection"
+                aria-label={isScanning ? 'Scanning in progress' : 'Re-scan selection'}
             >
                 <svg
                     width="14"
