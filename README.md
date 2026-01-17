@@ -167,5 +167,3 @@ MIT License – feel free to use this in your projects.
 - [Understanding Contrast Ratio](https://www.w3.org/WAI/GL/wiki/Contrast_ratio)
 
 ---
-
-**Built with ❤️ for accessible design**
