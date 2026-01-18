@@ -40,7 +40,7 @@
         "editorType": [
             "figma"
         ],
-        "id": "contrast-mate-plugin",
+        "id": "1594612646994059658",
         "name": "ContrastMate",
         "main": "src/main.ts",
         "ui": "src/ui.tsx",
