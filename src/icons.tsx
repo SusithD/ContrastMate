@@ -4,6 +4,7 @@
  */
 
 import { h, JSX } from 'preact'
+import { LOGO_DATA_URI } from './logo-data'
 
 interface IconProps {
     size?: number
@@ -284,5 +285,18 @@ export function IconFontMissing({ size = 16, className = '' }: IconProps): JSX.E
             <circle cx="19" cy="19" r="4" fill="currentColor" stroke="none" />
             <text x="19" y="21" text-anchor="middle" fill="#1e1e1e" font-size="7" font-weight="bold">?</text>
         </svg>
+    )
+}
+
+export function Logo({ size = 20, className = '' }: IconProps): JSX.Element {
+    return (
+        <img
+            src={LOGO_DATA_URI}
+            width={size}
+            height={size}
+            className={className}
+            alt="ContrastMate Logo"
+            style={{ objectFit: 'contain' }}
+        />
     )
 }

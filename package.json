@@ -23,12 +23,6 @@
         "name": "ContrastMate",
         "main": "src/main.ts",
         "ui": "src/ui.tsx",
-        "menu": [
-            {
-                "name": "ContrastMate",
-                "command": "open"
-            }
-        ],
         "relaunchButtons": {
             "open": {
                 "name": "Open Auditor",

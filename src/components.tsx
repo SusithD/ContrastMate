@@ -13,7 +13,8 @@ import {
     IconZoomIn,
     IconFontMissing,
     IconChevronRight,
-    IconInfo
+    IconInfo,
+    Logo
 } from './icons'
 
 // ============================================================================
@@ -520,20 +521,7 @@ export function Header({ onRescan, onInfoClick, isScanning, lastScanTime }: Head
     return (
         <div className="flex items-center justify-between px-4 py-3 bg-figma-bg-secondary border-b border-figma-border-subtle">
             <div className="flex items-center gap-2">
-                <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    className="text-figma-brand-primary"
-                >
-                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
-                    <circle cx="12" cy="8" r="2" fill="currentColor" />
-                    <path d="M12 10v4" stroke="currentColor" strokeWidth="2" />
-                    <path d="M8 15l4-1 4 1" stroke="currentColor" strokeWidth="2" />
-                    <path d="M8 19l2-4" stroke="currentColor" strokeWidth="2" />
-                    <path d="M16 19l-2-4" stroke="currentColor" strokeWidth="2" />
-                </svg>
+                <Logo size={20} className="text-figma-brand-primary" />
                 <div>
                     <h1 className="text-sm font-semibold text-figma-text-primary">
                         ContrastMate
@@ -621,21 +609,8 @@ export function AboutModal({ isOpen, onClose }: AboutModalProps): JSX.Element | 
                 <div className="p-6 space-y-6">
                     {/* Logo & Version */}
                     <div className="text-center">
-                        <div className="inline-flex items-center justify-center w-16 h-16 mb-3 bg-figma-brand-primary/10 rounded-xl">
-                            <svg
-                                width="32"
-                                height="32"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                className="text-figma-brand-primary"
-                            >
-                                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
-                                <circle cx="12" cy="8" r="2" fill="currentColor" />
-                                <path d="M12 10v4" stroke="currentColor" strokeWidth="2" />
-                                <path d="M8 15l4-1 4 1" stroke="currentColor" strokeWidth="2" />
-                                <path d="M8 19l2-4" stroke="currentColor" strokeWidth="2" />
-                                <path d="M16 19l-2-4" stroke="currentColor" strokeWidth="2" />
-                            </svg>
+                        <div className="inline-flex items-center justify-center w-16 h-16 mb-3 rounded-xl">
+                            <Logo size={48} className="text-figma-brand-primary" />
                         </div>
                         <h3 className="text-xl font-bold text-figma-text-primary mb-1">ContrastMate</h3>
                         <p className="text-sm text-figma-text-tertiary">Version 1.0.0</p>
