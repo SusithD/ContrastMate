@@ -1,5 +1,5 @@
 /**
- * Main Entry Point for Figma Accessibility Auditor Plugin
+ * Main Entry Point for Figma ContrastMate Plugin
  * Handles plugin lifecycle and communication with the UI
  */
 
@@ -37,7 +37,7 @@ export default function () {
     showUI({
         width: UI_WIDTH,
         height: UI_HEIGHT,
-        title: 'Accessibility Auditor'
+        title: 'ContrastMate'
     })
 
     // Listen for messages from UI
@@ -70,7 +70,7 @@ function setupMessageHandlers(): void {
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Failed to perform scan'
             emitError(errorMessage)
-            console.error('[Accessibility Auditor] SCAN_REQUEST error:', error)
+            console.error('[ContrastMate] SCAN_REQUEST error:', error)
         }
     })
 
@@ -81,7 +81,7 @@ function setupMessageHandlers(): void {
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Failed to rescan'
             emitError(errorMessage)
-            console.error('[Accessibility Auditor] RESCAN_REQUEST error:', error)
+            console.error('[ContrastMate] RESCAN_REQUEST error:', error)
         }
     })
 
@@ -101,7 +101,7 @@ function setupMessageHandlers(): void {
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : 'Failed to focus on node'
             emitError(errorMessage)
-            console.error('[Accessibility Auditor] FOCUS_NODE error:', error)
+            console.error('[ContrastMate] FOCUS_NODE error:', error)
         }
     })
 }
@@ -156,19 +156,19 @@ async function performScan(options: ScanOptions): Promise<void> {
 
         // Log stats to console
         const timeoutWarning = result.timedOut ? ' (TIMEOUT)' : ''
-        console.log(`[Accessibility Auditor] Scanned ${result.totalScanned} text layers in ${result.scanDuration}ms${timeoutWarning}`)
+        console.log(`[ContrastMate] Scanned ${result.totalScanned} text layers in ${result.scanDuration}ms${timeoutWarning}`)
         console.log(`  - Errors: ${result.errorCount}`)
         console.log(`  - Warnings: ${result.warningCount}`)
         console.log(`  - Passed: ${result.passCount}`)
 
         if (result.timedOut) {
-            console.warn('[Accessibility Auditor] Scan was terminated due to timeout. Results may be incomplete.')
+            console.warn('[ContrastMate] Scan was terminated due to timeout. Results may be incomplete.')
         }
 
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
         emitError(errorMessage)
-        console.error('[Accessibility Auditor] Scan error:', error)
+        console.error('[ContrastMate] Scan error:', error)
     }
 }
 

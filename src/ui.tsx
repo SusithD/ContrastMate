@@ -24,7 +24,8 @@ import {
     LayerList,
     LoadingState,
     EmptySelectionState,
-    NoResultsState
+    NoResultsState,
+    AboutModal
 } from './components'
 
 // ============================================================================
@@ -51,6 +52,7 @@ function App(): h.JSX.Element {
     const [selectedLayerId, setSelectedLayerId] = useState<string | null>(null)
     const [hasSelection, setHasSelection] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [isAboutOpen, setIsAboutOpen] = useState(false)
 
     // ============================================================================
     // Event Handlers
@@ -124,6 +126,14 @@ function App(): h.JSX.Element {
         setSearchQuery(query)
     }, [])
 
+    const handleAboutOpen = useCallback(() => {
+        setIsAboutOpen(true)
+    }, [])
+
+    const handleAboutClose = useCallback(() => {
+        setIsAboutOpen(false)
+    }, [])
+
     // ============================================================================
     // Filtered & Sorted Layers
     // ============================================================================
@@ -185,6 +195,7 @@ function App(): h.JSX.Element {
             {/* Header */}
             <Header
                 onRescan={handleRescan}
+                onInfoClick={handleAboutOpen}
                 isScanning={isScanning}
                 lastScanTime={scanResult?.timestamp}
             />
@@ -288,6 +299,9 @@ function App(): h.JSX.Element {
                     Learn more about WCAG
                 </a>
             </div>
+
+            {/* About Modal */}
+            <AboutModal isOpen={isAboutOpen} onClose={handleAboutClose} />
         </div>
     )
 }

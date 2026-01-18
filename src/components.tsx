@@ -12,7 +12,8 @@ import {
     IconType,
     IconZoomIn,
     IconFontMissing,
-    IconChevronRight
+    IconChevronRight,
+    IconInfo
 } from './icons'
 
 // ============================================================================
@@ -505,11 +506,12 @@ export function NoResultsState(): JSX.Element {
 
 interface HeaderProps {
     onRescan: () => void
+    onInfoClick: () => void
     isScanning: boolean
     lastScanTime?: number
 }
 
-export function Header({ onRescan, isScanning, lastScanTime }: HeaderProps): JSX.Element {
+export function Header({ onRescan, onInfoClick, isScanning, lastScanTime }: HeaderProps): JSX.Element {
     const formatTime = (timestamp: number) => {
         const date = new Date(timestamp)
         return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -534,7 +536,7 @@ export function Header({ onRescan, isScanning, lastScanTime }: HeaderProps): JSX
                 </svg>
                 <div>
                     <h1 className="text-sm font-semibold text-figma-text-primary">
-                        Accessibility Auditor
+                        ContrastMate
                     </h1>
                     {lastScanTime && (
                         <p className="text-2xs text-figma-text-tertiary">
@@ -565,6 +567,167 @@ export function Header({ onRescan, isScanning, lastScanTime }: HeaderProps): JSX
                 </svg>
                 {isScanning ? 'Scanning...' : 'Re-scan'}
             </button>
+            <button
+                onClick={onInfoClick}
+                className="btn btn--ghost p-2"
+                title="About ContrastMate"
+                aria-label="About ContrastMate"
+            >
+                <IconInfo size={16} />
+            </button>
+        </div>
+    )
+}
+
+// ============================================================================
+// About Modal Component
+// ============================================================================
+
+interface AboutModalProps {
+    isOpen: boolean
+    onClose: () => void
+}
+
+export function AboutModal({ isOpen, onClose }: AboutModalProps): JSX.Element | null {
+    if (!isOpen) return null
+
+    return (
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in"
+            onClick={onClose}
+        >
+            <div
+                className="bg-figma-bg-secondary rounded-xl shadow-2xl max-w-md w-full mx-4 animate-in zoom-in-95 slide-in-from-bottom-4"
+                onClick={(e) => e.stopPropagation()}
+                role="dialog"
+                aria-labelledby="about-title"
+                aria-modal="true"
+            >
+                {/* Header */}
+                <div className="flex items-center justify-between p-6 border-b border-figma-border-subtle">
+                    <h2 id="about-title" className="text-lg font-semibold text-figma-text-primary">
+                        About ContrastMate
+                    </h2>
+                    <button
+                        onClick={onClose}
+                        className="btn btn--ghost p-2 hover:bg-figma-bg-tertiary rounded-lg transition-colors"
+                        aria-label="Close about dialog"
+                    >
+                        <IconX size={16} />
+                    </button>
+                </div>
+
+                {/* Content */}
+                <div className="p-6 space-y-6">
+                    {/* Logo & Version */}
+                    <div className="text-center">
+                        <div className="inline-flex items-center justify-center w-16 h-16 mb-3 bg-figma-brand-primary/10 rounded-xl">
+                            <svg
+                                width="32"
+                                height="32"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                className="text-figma-brand-primary"
+                            >
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                                <circle cx="12" cy="8" r="2" fill="currentColor" />
+                                <path d="M12 10v4" stroke="currentColor" strokeWidth="2" />
+                                <path d="M8 15l4-1 4 1" stroke="currentColor" strokeWidth="2" />
+                                <path d="M8 19l2-4" stroke="currentColor" strokeWidth="2" />
+                                <path d="M16 19l-2-4" stroke="currentColor" strokeWidth="2" />
+                            </svg>
+                        </div>
+                        <h3 className="text-xl font-bold text-figma-text-primary mb-1">ContrastMate</h3>
+                        <p className="text-sm text-figma-text-tertiary">Version 1.0.0</p>
+                    </div>
+
+                    {/* Description */}
+                    <div className="space-y-2">
+                        <p className="text-sm text-figma-text-secondary leading-relaxed">
+                            A professional WCAG contrast checker for Figma designs. Scan your text layers
+                            and ensure they meet accessibility standards (AA/AAA compliance).
+                        </p>
+                    </div>
+
+                    {/* Features */}
+                    <div className="space-y-2">
+                        <h4 className="text-xs font-semibold text-figma-text-primary uppercase tracking-wide">
+                            Features
+                        </h4>
+                        <ul className="space-y-1.5 text-sm text-figma-text-secondary">
+                            <li className="flex items-start gap-2">
+                                <IconCheck size={14} className="text-figma-brand-success mt-0.5 flex-shrink-0" />
+                                <span>Real-time WCAG 2.1 contrast checking</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <IconCheck size={14} className="text-figma-brand-success mt-0.5 flex-shrink-0" />
+                                <span>AA & AAA level compliance detection</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <IconCheck size={14} className="text-figma-brand-success mt-0.5 flex-shrink-0" />
+                                <span>Large text threshold calculation</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <IconCheck size={14} className="text-figma-brand-success mt-0.5 flex-shrink-0" />
+                                <span>Full keyboard accessibility</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* Divider */}
+                    <div className="border-t border-figma-border-subtle" />
+
+                    {/* Author */}
+                    <div className="space-y-3">
+                        <h4 className="text-xs font-semibold text-figma-text-primary uppercase tracking-wide">
+                            Created By
+                        </h4>
+                        <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-full bg-figma-brand-primary/10 flex items-center justify-center">
+                                <span className="text-lg font-bold text-figma-brand-primary">SD</span>
+                            </div>
+                            <div>
+                                <p className="text-sm font-medium text-figma-text-primary">
+                                    Susith Deshan Alwis
+                                </p>
+                                <p className="text-xs text-figma-text-tertiary">Developer & Designer</p>
+                            </div>
+                        </div>
+
+                        {/* Contact Links */}
+                        <div className="flex gap-2">
+                            <a
+                                href="https://github.com/SusithD"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 btn btn--secondary text-xs justify-center"
+                            >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                </svg>
+                                GitHub
+                            </a>
+                            <a
+                                href="mailto:iamsusithalwis@gmail.com"
+                                className="flex-1 btn btn--secondary text-xs justify-center"
+                            >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                    <polyline points="22,6 12,13 2,6"/>
+                                </svg>
+                                Email
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Footer */}
+                <div className="px-6 py-4 bg-figma-bg-tertiary border-t border-figma-border-subtle rounded-b-xl">
+                    <p className="text-2xs text-center text-figma-text-tertiary">
+                        Made with ❤️ for the Figma community • MIT License
+                    </p>
+                </div>
+            </div>
         </div>
     )
 }
