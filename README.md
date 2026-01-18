@@ -1,34 +1,58 @@
-# Accessibility Auditor – Figma Plugin
+# ContrastMate
 
-A professional-grade Figma plugin for auditing text accessibility and contrast ratios in your designs. Built with TypeScript, React (Preact), and Tailwind CSS using the `create-figma-plugin` architecture.
+<div align="center">
+  <img src="logo.png" alt="ContrastMate Logo" width="128" height="128">
+  <h3>Professional WCAG Contrast Checker for Figma</h3>
+  <p>Ensure your designs meet WCAG 2.1 accessibility standards with real-time contrast analysis</p>
+</div>
 
-![Accessibility Auditor](https://img.shields.io/badge/WCAG-2.1-green) ![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue) ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-cyan)
+<p align="center">
+  <img src="https://img.shields.io/badge/WCAG-2.1%20AA%2FAAA-green" alt="WCAG 2.1">
+  <img src="https://img.shields.io/badge/TypeScript-5.3-blue" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Tests-41%20passing-brightgreen" alt="Tests">
+  <img src="https://img.shields.io/badge/License-MIT-yellow" alt="MIT License">
+  <img src="https://img.shields.io/badge/Vulnerabilities-0-success" alt="Zero vulnerabilities">
+</p>
+
+---
 
 ## ✨ Features
 
 ### 🔍 Comprehensive Scanning Engine
 - **Recursive layer scanning** – Analyzes all text layers within your selection or the entire page
-- **Library font support** – Uses `figma.getStyleById` to accurately identify fonts, even from linked libraries
-- **Complete font extraction** – Captures `fontFamily`, `fontSize`, `fontWeight`, and `lineHeight`
+- **Cross-page support** – Automatically switches pages to focus on layers
+- **Library font support** – Accurately identifies fonts from linked libraries
+- **Timeout protection** – 30-second maximum to prevent hangs on large files
+- **Real-time progress** – Live counter shows scanned layer count
 
 ### 📐 Reliable Contrast Calculation
 - **WCAG 2.1 compliant** – Implements the official W3C contrast ratio algorithm
-- **Smart background detection** – Calculates contrast against:
-  - Immediate parent frame fills
-  - Sibling layers positioned behind the text
-  - Page/canvas background as fallback
-- **Alpha channel support** – Handles semi-transparent colors with proper alpha compositing
+- **Smart background detection** – Calculates contrast against parent frames and sibling layers
+- **Alpha channel support** – Proper alpha compositing for semi-transparent colors
+- **Large text detection** – Automatic threshold calculation (18pt+ or 14pt+ bold)
+- **Precise ratios** – Displays exact contrast ratios (e.g., 4.52:1)
 
-### 🎨 Modern UI (React + Tailwind CSS)
-- **Clean dashboard** – Lists all text layers with status indicators
-- **Powerful filtering** – Filter by "Errors Only" (Contrast < 4.5:1), Warnings, or Passed
-- **Search functionality** – Find layers by name, text content, font, or parent
-- **One-click navigation** – Click any layer to zoom to it in Figma
+### 🎨 Modern, Accessible UI
+- **Clean dashboard** – Professional interface with status indicators
+- **Powerful filtering** – Filter by Errors, Warnings, or Passed layers
+- **Smart search** – Find layers by name, text content, font, or parent
+- **One-click navigation** – Click any layer to focus it in Figma canvas
+- **Real-time updates** – See progress as large scans process
 
-### 🛡️ Reliability Features
-- **Re-scan button** – Refresh data after design changes
-- **Missing font detection** – Shows warning icons for uninstalled fonts
-- **Graceful error handling** – Clear feedback for edge cases
+### ♿ Full Keyboard Accessibility
+- **Arrow key navigation** – Navigate filters with keyboard
+- **Enter/Space activation** – Activate buttons and cards
+- **Tab order** – Logical focus flow through all controls
+- **ARIA labels** – Screen reader friendly
+- **WCAG 2.1 AA compliant** – The accessibility tool is itself accessible!
+
+### 🛡️ Production-Ready Reliability
+- **Robust error handling** – All async operations wrapped in try-catch
+- **Input validation** – Prevents malformed requests
+- **Specific error messages** – Know exactly what went wrong
+- **Missing font detection** – Warning icons for uninstalled fonts
+- **41 unit tests** – Comprehensive test coverage
+- **Zero vulnerabilities** – All dependencies up-to-date
 
 ## 🚀 Getting Started
 
@@ -83,37 +107,59 @@ A professional-grade Figma plugin for auditing text accessibility and contrast r
 ## 🏗️ Project Structure
 
 ```
-figma-accessibility-auditor/
+ContrastMate/
 ├── src/
 │   ├── main.ts          # Plugin logic (Figma main thread)
-│   ├── ui.tsx           # React/Preact UI component
-│   ├── scanner.ts       # Scanning engine
+│   ├── ui.tsx           # Preact UI component
+│   ├── scanner.ts       # Scanning engine with timeout protection
 │   ├── contrast.ts      # WCAG contrast calculations
+│   ├── contrast.test.ts # Unit tests (41 tests)
 │   ├── components.tsx   # Reusable UI components
-│   ├── icons.tsx        # SVG icon components
+│   ├── icons.tsx        # SVG icon components + Logo
 │   ├── types.ts         # TypeScript type definitions
-│   └── styles.css       # Tailwind CSS + custom styles
+│   ├── styles.css       # Tailwind CSS + custom styles
+│   ├── logo.svg         # ContrastMate logo (embedded)
+│   └── logo-data.ts     # Logo as base64 data URI (auto-generated)
+├── scripts/
+│   └── update-manifest-icon.js  # Build utility (not used)
+├── build/               # Generated output
+│   ├── main.js          # Compiled plugin (11KB)
+│   └── ui.js            # Compiled UI (211KB)
+├── logo.png             # Plugin icon for Figma Community (2044x2044px)
 ├── package.json         # Dependencies & plugin config
+├── manifest.json        # Generated Figma plugin manifest
 ├── tsconfig.json        # TypeScript configuration
+├── vitest.config.ts     # Test configuration
 ├── tailwind.config.js   # Tailwind CSS configuration
 ├── postcss.config.js    # PostCSS configuration
+├── PUBLISHING_GUIDE.md  # How to publish to Figma Community
 └── README.md            # This file
 ```
 
-## 🔧 Configuration
+## 🧪 Testing
 
-The plugin is configured in `package.json` under the `figma-plugin` key:
+ContrastMate includes comprehensive unit tests:
 
-```json
-{
-  "figma-plugin": {
-    "editorType": ["figma"],
-    "name": "Accessibility Auditor",
-    "main": "src/main.ts",
-    "ui": "src/ui.tsx"
-  }
-}
+```bash
+# Run tests once
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with UI
+npm run test:ui
+
+# Run tests with coverage report
+npm run test:coverage
 ```
+
+**Test Coverage:**
+- ✅ 41 unit tests
+- ✅ Contrast calculations
+- ✅ WCAG level detection
+- ✅ Large text thresholds
+- ✅ All critical functions tested
 
 ## 🧪 How Contrast is Calculated
 
@@ -146,18 +192,52 @@ The plugin implements the official [WCAG 2.1 contrast ratio formula](https://www
 - `tailwindcss` – Utility-first CSS framework
 - `typescript` – Type safety
 
+## 👨‍💻 Author
+
+**Susith Deshan Alwis**
+Developer & Designer
+
+- GitHub: [@SusithD](https://github.com/SusithD)
+- Email: iamsusithalwis@gmail.com
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please:
 
 1. Fork the repository
-2. Create a feature branch
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
-4. Submit a pull request
+4. Add tests if applicable
+5. Ensure all tests pass (`npm test`)
+6. Commit your changes (`git commit -m 'Add amazing feature'`)
+7. Push to the branch (`git push origin feature/amazing-feature`)
+8. Open a Pull Request
+
+### Development Setup
+
+```bash
+# Install dependencies
+npm install
+
+# Start development mode (hot reload)
+npm run watch
+
+# Run tests
+npm test
+
+# Build for production
+npm run build
+```
 
 ## 📄 License
 
-MIT License – feel free to use this in your projects.
+MIT License © 2026 Susith Deshan Alwis
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
 
 ## 🔗 Resources
 

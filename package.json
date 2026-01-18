@@ -3,8 +3,29 @@
     "version": "1.0.0",
     "type": "module",
     "description": "Professional WCAG contrast checker for Figma designs",
+    "keywords": [
+        "figma",
+        "figma-plugin",
+        "accessibility",
+        "wcag",
+        "contrast",
+        "a11y",
+        "wcag-2.1",
+        "color-contrast",
+        "design-system",
+        "compliance",
+        "accessibility-testing"
+    ],
     "author": "Susith Deshan Alwis <iamsusithalwis@gmail.com> (https://github.com/SusithD)",
     "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SusithD/ContrastMate.git"
+    },
+    "bugs": {
+        "url": "https://github.com/SusithD/ContrastMate/issues"
+    },
+    "homepage": "https://github.com/SusithD/ContrastMate#readme",
     "scripts": {
         "build:css": "postcss src/styles.css -o src/styles.processed.css",
         "build": "npm run build:css && build-figma-plugin --typecheck --minify",
