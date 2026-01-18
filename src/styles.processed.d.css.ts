@@ -107,6 +107,7 @@ declare const styles: {
   readonly "rounded-md": string;
   readonly "rounded-xl": string;
   readonly "shadow-2xl": string;
+  readonly "space-y-1": string;
   readonly "space-y-1.5": string;
   readonly "space-y-2": string;
   readonly "space-y-3": string;

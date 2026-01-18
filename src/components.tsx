@@ -695,13 +695,6 @@ export function AboutModal({ isOpen, onClose }: AboutModalProps): JSX.Element | 
                         </div>
                     </div>
                 </div>
-
-                {/* Footer */}
-                <div className="px-6 py-4 bg-figma-bg-tertiary border-t border-figma-border-subtle rounded-b-xl">
-                    <p className="text-2xs text-center text-figma-text-tertiary">
-                        Made with ❤️ for the Figma community • MIT License
-                    </p>
-                </div>
             </div>
         </div>
     )
